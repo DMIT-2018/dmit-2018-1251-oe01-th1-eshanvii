@@ -26,11 +26,35 @@ ClubActivities
         a.Name != "BTech Club Meeting"
     )
     .Select(a => new {
-        a.StartDate,
-        Location = a.CampusVenue.Location ?? "N/A",
+        StartDate = a.StartDate,
+        Location = a.CampusVenue.Location,
         Club = a.Club.ClubName,
         Activity = a.Name
     })
     .OrderBy(a => a.StartDate)
     .Dump();
+	
+	//Q2.
+	
+	
+	ProgramCourses
+		.GroupBy(p => new
+		{
+			ProgramName = p.Program.ProgramName,
+            SchoolCode  = p.Program.SchoolCode
+		})
+		.Select(a => new {
+				School = a.Key.SchoolCode == "SAMIT" 
+							? "School of Advance Media and IT"
+                    		: a.Key.SchoolCode == "SEET"
+                        	? "School of Electrical Engineering Technology"
+							: "Unknown",
+                Program = a.Key.ProgramName,
+                RequiredCoursesCount = a.Count(x => x.Required),
+                OptionalCoursesCount = a.Count(x => !x.Required)
+		})
+		.Where(x => x.RequiredCoursesCount >= 22)
+		.OrderBy(x => x.Program)
+		.Dump();
+	
 
