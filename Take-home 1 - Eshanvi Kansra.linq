@@ -99,7 +99,22 @@ Employees
 	
 	
 	
-	
+//Q5.
+
+Clubs
+	.Select(c => new
+    {
+       	Supervisor = (c.Employee == null
+                                ? "Unknown"
+                                : (c.Employee.FirstName + " " + c.Employee.LastName)),
+        Club       = c.ClubName,
+        MemberCount = c.ClubMembers.Count(),                       
+        Activities  = (c.ClubActivities.Count() == 0                 
+                                ? "None Schedule"
+                                : c.ClubActivities.Count().ToString())
+    })
+	.OrderByDescending(x => x.MemberCount)		
+	.Dump();
 	
 	
 	
