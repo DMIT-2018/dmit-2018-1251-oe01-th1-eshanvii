@@ -17,7 +17,6 @@
 
 //Q1.
 
-
 ClubActivities
     .Where(a =>
         a.StartDate >= new DateTime(2025, 1, 1) &&
@@ -37,36 +36,34 @@ ClubActivities
 	
 	
 	
-	//Q2.
+//Q2.
+	
+ProgramCourses
+	.GroupBy(p => new
+	{
+		ProgramName = p.Program.ProgramName,
+        SchoolCode  = p.Program.SchoolCode
+	})
+	.Select(a => new {
+		School = a.Key.SchoolCode == "SAMIT" 
+					? "School of Advance Media and IT"
+                    : a.Key.SchoolCode == "SEET"
+                    ? "School of Electrical Engineering Technology"
+					: "Unknown",
+        Program = a.Key.ProgramName,
+        RequiredCoursesCount = a.Count(x => x.Required),
+        OptionalCoursesCount = a.Count(x => !x.Required)
+	})
+	.Where(x => x.RequiredCoursesCount >= 22)
+	.OrderBy(x => x.Program)
+	.Dump();
 	
 	
-	ProgramCourses
-		.GroupBy(p => new
-		{
-			ProgramName = p.Program.ProgramName,
-            SchoolCode  = p.Program.SchoolCode
-		})
-		.Select(a => new {
-				School = a.Key.SchoolCode == "SAMIT" 
-							? "School of Advance Media and IT"
-                    		: a.Key.SchoolCode == "SEET"
-                        	? "School of Electrical Engineering Technology"
-							: "Unknown",
-                Program = a.Key.ProgramName,
-                RequiredCoursesCount = a.Count(x => x.Required),
-                OptionalCoursesCount = a.Count(x => !x.Required)
-		})
-		.Where(x => x.RequiredCoursesCount >= 22)
-		.OrderBy(x => x.Program)
-		.Dump();
 	
 	
+//Q3.
 	
-	
-	//Q3.
-	
-	
-	Students
+Students
 	.Where(s => s.StudentPayments.Count() == 0
 				&& s.Countries.CountryName != "Canada")
 	.OrderBy(s => s.LastName)
@@ -78,6 +75,40 @@ ClubActivities
         ClubMembershipCount = (s.ClubMembers.Count() == 0 ? "None" : s.ClubMembers.Count().ToString())
 	})
 	.Dump();
+	
+	
+	
+//Q4.
+	
+Employees
+	.Where(e => e.Position.Description == "Instructor"
+				&& e.ReleaseDate == null
+            	&& e.ClassOfferings.Count() > 0)
+	.OrderByDescending(x => x.ClassOfferings.Count)
+	.ThenBy(x => x.LastName)
+	.Select(x => new
+    {
+        ProgramName = x.Program.ProgramName,
+        FullName    = x.FirstName + " " + x.LastName,
+        WorkLoad    = (x.ClassOfferings.Count > 24 ? "High"
+                      : x.ClassOfferings.Count > 8  ? "Med"
+                                                    : "Low")
+     })
+	.Dump();
+		
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 
