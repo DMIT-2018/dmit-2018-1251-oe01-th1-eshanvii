@@ -19,7 +19,6 @@
 
 
 ClubActivities
-    .ToList()
     .Where(a =>
         a.StartDate >= new DateTime(2025, 1, 1) &&
         (a.CampusVenue.Location != "Scheduled Room") &&
@@ -32,7 +31,11 @@ ClubActivities
         Activity = a.Name
     })
     .OrderBy(a => a.StartDate)
+	.ToList()
     .Dump();
+	
+	
+	
 	
 	//Q2.
 	
@@ -56,5 +59,25 @@ ClubActivities
 		.Where(x => x.RequiredCoursesCount >= 22)
 		.OrderBy(x => x.Program)
 		.Dump();
+	
+	
+	
+	
+	//Q3.
+	
+	
+	Students
+	.Where(s => s.StudentPayments.Count() == 0
+				&& s.Countries.CountryName != "Canada")
+	.OrderBy(s => s.LastName)
+	.Select(s => new
+    {
+        StudentNumber = s.StudentNumber,
+        CountryName   = s.Countries.CountryName,
+        FullName      = s.FirstName + " " + s.LastName,
+        ClubMembershipCount = (s.ClubMembers.Count() == 0 ? "None" : s.ClubMembers.Count().ToString())
+	})
+	.Dump();
+	
 	
 
